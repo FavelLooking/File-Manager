@@ -10,6 +10,7 @@ import { goToFolder } from "./goToFolder.js";
 import { showList } from "./showList.js";
 import { readFile } from "./readFile.js";
 import { createFile } from "./createFile.js";
+import { renameFile } from "./renameFile.js";
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 const parseArg = () => {
@@ -54,6 +55,9 @@ const initializeProgram = async () => {
         break;
       case "add":
         createFile(currentDir, args);
+        break;
+      case "rn":
+        renameFile(currentDir, args);
         break;
       default:
         output.write(`Invalid input\n`);
