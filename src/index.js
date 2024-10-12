@@ -7,6 +7,7 @@ import * as readline from "node:readline/promises";
 import { sayBye } from "./sayBye.js";
 import { goUp } from "./goUp.js";
 import { goToFolder } from "./goToFolder.js";
+import { showList } from "./showList.js";
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 const parseArg = () => {
@@ -17,13 +18,13 @@ const parseArg = () => {
 };
 
 export const showCurrentDir = (currentDir) => {
-  output.write(`You are currently in  ${String(currentDir)}\n`);
+  output.write(`You are currently in  ${currentDir}\n`);
 };
 
 const initializeProgram = async () => {
   let userName = parseArg();
   output.write(`Welcome to the File Manager, ${userName}!\n`);
-  let currentDir = os.homedir();
+  let currentDir = String(os.homedir());
 
   const readLine = readline.createInterface({
     input: process.stdin,
@@ -42,6 +43,9 @@ const initializeProgram = async () => {
         break;
       case "cd":
         currentDir = goToFolder(currentDir, args);
+        break;
+      case "ls":
+        showList(currentDir);
     }
   });
   showCurrentDir(currentDir);
