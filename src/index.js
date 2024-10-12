@@ -5,6 +5,8 @@ import os from "os";
 import { stdin as input, stdout as output } from "node:process";
 import * as readline from "node:readline/promises";
 import { sayBye } from "./sayBye.js";
+import { goUp } from "./goUp.js";
+import { goToFolder } from "./goToFolder.js";
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 const parseArg = () => {
@@ -14,23 +16,35 @@ const parseArg = () => {
   return trimmedArg.slice(equalIndex + 1);
 };
 
+export const showCurrentDir = (currentDir) => {
+  output.write(`You are currently in  ${String(currentDir)}\n`);
+};
+
 const initializeProgram = async () => {
   let userName = parseArg();
   output.write(`Welcome to the File Manager, ${userName}!\n`);
+  let currentDir = os.homedir();
 
   const readLine = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
 
-  output.write(`You are currently in  ${String(os.homedir())}\n`);
-
   readLine.on("line", (input) => {
     const [command, ...args] = input.trim().split(" ");
-    if (command === ".exit") {
-      sayBye(userName, readLine);
+
+    switch (command) {
+      case ".exit":
+        sayBye(userName, readLine);
+        break;
+      case "up":
+        currentDir = goUp(currentDir);
+        break;
+      case "cd":
+        currentDir = goToFolder(currentDir, args);
     }
   });
+  showCurrentDir(currentDir);
 
   readLine.on("SIGINT", () => sayBye(userName, readLine));
 };
