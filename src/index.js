@@ -8,6 +8,7 @@ import { sayBye } from "./sayBye.js";
 import { goUp } from "./goUp.js";
 import { goToFolder } from "./goToFolder.js";
 import { showList } from "./showList.js";
+import { readFile } from "./readFile.js";
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 const parseArg = () => {
@@ -46,6 +47,11 @@ const initializeProgram = async () => {
         break;
       case "ls":
         showList(currentDir);
+        break;
+      case "cat":
+        readFile(currentDir, args);
+      default:
+        output.write(`Invalid input\n`);
     }
   });
   showCurrentDir(currentDir);
