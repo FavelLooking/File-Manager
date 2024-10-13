@@ -47,7 +47,7 @@ const initializeProgram = async () => {
     output: process.stdout,
   });
 
-  readLine.on("line", (input) => {
+  readLine.on("line", async (input) => {
     const [command, ...args] = input.trim().split(" ");
 
     if (command === "os") {
@@ -74,7 +74,7 @@ const initializeProgram = async () => {
       switch (command) {
         case ".exit":
           sayBye(userName, readLine);
-          break;
+          return;
         case "up":
           currentDir = goUp(currentDir);
           break;
@@ -82,7 +82,7 @@ const initializeProgram = async () => {
           currentDir = goToFolder(currentDir, args);
           break;
         case "ls":
-          showList(currentDir);
+          await showList(currentDir);
           break;
         case "cat":
           readFile(currentDir, args);
@@ -91,25 +91,25 @@ const initializeProgram = async () => {
           createFile(currentDir, args);
           break;
         case "rn":
-          renameFile(currentDir, args);
+          await renameFile(currentDir, args);
           break;
         case "cp":
-          copyFile(currentDir, args);
+          await copyFile(currentDir, args);
           break;
         case "mv":
-          moveFile(currentDir, args);
+          await moveFile(currentDir, args);
           break;
         case "rm":
-          removeFile(currentDir, args);
+          await removeFile(currentDir, args);
           break;
         case "hash":
-          hashFile(currentDir, args);
+          await hashFile(currentDir, args);
           break;
         case "compress":
-          compressFile(currentDir, args);
+          await compressFile(currentDir, args);
           break;
         case "decompress":
-          decompressFile(currentDir, args);
+          await decompressFile(currentDir, args);
           break;
 
         default:

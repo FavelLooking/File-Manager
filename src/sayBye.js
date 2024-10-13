@@ -1,7 +1,9 @@
 export const sayBye = (userName, readLine) => {
   process.stdout.write(
-    `\nThank you for using File Manager, ${userName}, goodbye!`,
+    `\nThank you for using File Manager, ${userName}, goodbye!\n`,
   );
   readLine.close();
-  process.exit(0);
+  setTimeout(() => {
+    process.exit(0);
+  }, 2000);
 };
