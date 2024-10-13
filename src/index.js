@@ -33,6 +33,10 @@ function parseArgs() {
   return usernameArg.split("=")[1];
 }
 
+export const handleInvalidData = () => {
+  output.write(`Invalid input\n`);
+};
+
 export const showCurrentDir = (currentDir) => {
   output.write(`You are currently in  ${currentDir}\n`);
 };
@@ -68,7 +72,7 @@ const initializeProgram = async () => {
           getArchitecture();
           break;
         default:
-          output.write(`Invalid input\n`);
+          handleInvalidData();
       }
     } else
       switch (command) {
@@ -76,10 +80,10 @@ const initializeProgram = async () => {
           sayBye(userName, readLine);
           return;
         case "up":
-          currentDir = goUp(currentDir);
+          currentDir = goUp(currentDir, args);
           break;
         case "cd":
-          currentDir = goToFolder(currentDir, args);
+          currentDir = await goToFolder(currentDir, args);
           break;
         case "ls":
           await showList(currentDir);
@@ -113,7 +117,7 @@ const initializeProgram = async () => {
           break;
 
         default:
-          output.write(`Invalid input\n`);
+          handleInvalidData();
       }
     showCurrentDir(currentDir);
   });

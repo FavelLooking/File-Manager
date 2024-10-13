@@ -1,13 +1,22 @@
 import * as path from "path";
-import { stdout as output } from "node:process";
+import { handleInvalidData } from "./index.js";
+import * as fs from "fs";
 
-export const goToFolder = (currentDir, folder) => {
-  if (!folder.length) {
-    output.write(`Invalid input\n`);
-    return;
+export const goToFolder = async (currentDir, args) => {
+  if (args.length !== 1) {
+    handleInvalidData();
+    return currentDir;
   }
-  const folderName = folder[0];
+  const folderName = args[0];
   const targetDir = path.join(currentDir, folderName);
+  console.log(targetDir);
+
+  try {
+    await fs.promises.access(targetDir);
+  } catch (err) {
+    console.log(`Operation failed`);
+    return currentDir;
+  }
 
   return targetDir;
 };
