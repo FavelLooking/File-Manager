@@ -11,6 +11,7 @@ import { renameFile } from "./renameFile.js";
 import { copyFile } from "./copyFile.js";
 import { moveFile } from "./moveFile.js";
 import { removeFile } from "./removeFile.js";
+import { hashFile } from "./hashFile.js";
 import {
   getEol,
   getCpus,
@@ -98,6 +99,9 @@ const initializeProgram = async () => {
           break;
         case "rm":
           removeFile(currentDir, args);
+          break;
+        case "hash":
+          hashFile(currentDir, args);
           break;
         default:
           output.write(`Invalid input\n`);
