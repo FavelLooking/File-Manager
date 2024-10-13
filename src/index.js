@@ -86,7 +86,7 @@ const initializeProgram = async () => {
           currentDir = await goToFolder(currentDir, args);
           break;
         case "ls":
-          await showList(currentDir);
+          await showList(currentDir, args);
           break;
         case "cat":
           readFile(currentDir, args);

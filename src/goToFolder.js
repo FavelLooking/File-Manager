@@ -8,8 +8,9 @@ export const goToFolder = async (currentDir, args) => {
     return currentDir;
   }
   const folderName = args[0];
-  const targetDir = path.join(currentDir, folderName);
-  console.log(targetDir);
+  const targetDir = path.isAbsolute(folderName)
+    ? folderName
+    : path.join(currentDir, folderName);
 
   try {
     await fs.promises.access(targetDir);

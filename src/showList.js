@@ -1,11 +1,13 @@
-import os from "os";
 import * as path from "path";
-import { showCurrentDir } from "./index.js";
 import { promises as fs } from "fs";
+import { handleInvalidData } from "./index.js";
 
-export const showList = async (currentDir) => {
+export const showList = async (currentDir, args) => {
+  if (args.length) {
+    handleInvalidData();
+    return;
+  }
   try {
-    //await fs.access(currentDir);
     const directory = await fs.readdir(currentDir);
     const folderContent = await Promise.all(
       directory.map(async (item) => {
@@ -28,7 +30,7 @@ export const showList = async (currentDir) => {
     console.table(folderContent);
   } catch (err) {
     if (err.code === "ENOENT") {
-      throw new Error("Operation failed");
+      console.log(`Operation failed`);
     }
   }
 };
