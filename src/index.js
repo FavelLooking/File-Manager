@@ -11,21 +11,26 @@ import { showList } from "./showList.js";
 import { readFile } from "./readFile.js";
 import { createFile } from "./createFile.js";
 import { renameFile } from "./renameFile.js";
+import { copyFile } from "./copyFile.js";
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
-const parseArg = () => {
-  const arg = process.argv[3];
-  const trimmedArg = arg.replace("--", "");
-  let equalIndex = trimmedArg.indexOf("=");
-  return trimmedArg.slice(equalIndex + 1);
-};
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const usernameArg = args.find((arg) => arg.startsWith("--username="));
+
+  if (!usernameArg) {
+    throw new Error("Error");
+  }
+
+  return usernameArg.split("=")[1];
+}
 
 export const showCurrentDir = (currentDir) => {
   output.write(`You are currently in  ${currentDir}\n`);
 };
 
 const initializeProgram = async () => {
-  let userName = parseArg();
+  let userName = parseArgs();
   output.write(`Welcome to the File Manager, ${userName}!\n`);
   let currentDir = String(os.homedir());
 
@@ -58,6 +63,9 @@ const initializeProgram = async () => {
         break;
       case "rn":
         renameFile(currentDir, args);
+        break;
+      case "cp":
+        copyFile(currentDir, args);
         break;
       default:
         output.write(`Invalid input\n`);
