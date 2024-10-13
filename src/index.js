@@ -11,6 +11,13 @@ import { renameFile } from "./renameFile.js";
 import { copyFile } from "./copyFile.js";
 import { moveFile } from "./moveFile.js";
 import { removeFile } from "./removeFile.js";
+import {
+  getEol,
+  getCpus,
+  getHomeDir,
+  getUserName,
+  getArchitecture,
+} from "./osInfo.js";
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -40,40 +47,61 @@ const initializeProgram = async () => {
   readLine.on("line", (input) => {
     const [command, ...args] = input.trim().split(" ");
 
-    switch (command) {
-      case ".exit":
-        sayBye(userName, readLine);
-        break;
-      case "up":
-        currentDir = goUp(currentDir);
-        break;
-      case "cd":
-        currentDir = goToFolder(currentDir, args);
-        break;
-      case "ls":
-        showList(currentDir);
-        break;
-      case "cat":
-        readFile(currentDir, args);
-        break;
-      case "add":
-        createFile(currentDir, args);
-        break;
-      case "rn":
-        renameFile(currentDir, args);
-        break;
-      case "cp":
-        copyFile(currentDir, args);
-        break;
-      case "mv":
-        moveFile(currentDir, args);
-        break;
-      case "rm":
-        removeFile(currentDir, args);
-        break;
-      default:
-        output.write(`Invalid input\n`);
-    }
+    if (command === "os") {
+      switch (args[0]) {
+        case "--EOL":
+          getEol();
+          break;
+        case "--cpus":
+          getCpus();
+          break;
+        case "--homedir":
+          getHomeDir();
+          break;
+        case "--username":
+          getUserName();
+          break;
+        case "--architecture":
+          getArchitecture();
+          break;
+        default:
+          output.write(`Invalid input\n`);
+      }
+    } else
+      switch (command) {
+        case ".exit":
+          sayBye(userName, readLine);
+          break;
+        case "up":
+          currentDir = goUp(currentDir);
+          break;
+        case "cd":
+          currentDir = goToFolder(currentDir, args);
+          break;
+        case "ls":
+          showList(currentDir);
+          break;
+        case "cat":
+          readFile(currentDir, args);
+          break;
+        case "add":
+          createFile(currentDir, args);
+          break;
+        case "rn":
+          renameFile(currentDir, args);
+          break;
+        case "cp":
+          copyFile(currentDir, args);
+          break;
+        case "mv":
+          moveFile(currentDir, args);
+          break;
+        case "rm":
+          removeFile(currentDir, args);
+          break;
+        default:
+          output.write(`Invalid input\n`);
+      }
     showCurrentDir(currentDir);
   });
   showCurrentDir(currentDir);
