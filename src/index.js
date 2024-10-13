@@ -1,8 +1,5 @@
-import { promises as fs } from "fs";
-import path from "path";
-import * as url from "url";
 import os from "os";
-import { stdin as input, stdout as output } from "node:process";
+import { stdout as output } from "node:process";
 import * as readline from "node:readline/promises";
 import { sayBye } from "./sayBye.js";
 import { goUp } from "./goUp.js";
@@ -13,7 +10,7 @@ import { createFile } from "./createFile.js";
 import { renameFile } from "./renameFile.js";
 import { copyFile } from "./copyFile.js";
 import { moveFile } from "./moveFile.js";
-const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
+import { removeFile } from "./removeFile.js";
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -71,9 +68,13 @@ const initializeProgram = async () => {
       case "mv":
         moveFile(currentDir, args);
         break;
+      case "rm":
+        removeFile(currentDir, args);
+        break;
       default:
         output.write(`Invalid input\n`);
     }
+    showCurrentDir(currentDir);
   });
   showCurrentDir(currentDir);
 
