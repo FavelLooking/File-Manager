@@ -12,6 +12,7 @@ import { readFile } from "./readFile.js";
 import { createFile } from "./createFile.js";
 import { renameFile } from "./renameFile.js";
 import { copyFile } from "./copyFile.js";
+import { moveFile } from "./moveFile.js";
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 function parseArgs() {
@@ -66,6 +67,9 @@ const initializeProgram = async () => {
         break;
       case "cp":
         copyFile(currentDir, args);
+        break;
+      case "mv":
+        moveFile(currentDir, args);
         break;
       default:
         output.write(`Invalid input\n`);
