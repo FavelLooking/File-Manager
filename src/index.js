@@ -34,7 +34,9 @@ function parseArgs() {
 }
 
 export const handleInvalidData = () => {
-  output.write(`Invalid input\n`);
+  const yellow = "\x1b[33m";
+  const reset = "\x1b[0m";
+  output.write(`${yellow}Invalid input\n${reset}`);
 };
 
 export const showCurrentDir = (currentDir) => {
