@@ -1,11 +1,24 @@
 import * as path from "path";
-import fs from "fs";
+import { promises as fs } from "fs";
 import { stdout as output } from "node:process";
+import { handleInvalidData } from "./index.js";
 
-export const readFile = (currentDir, targetFile) => {
-  const filePath = path.join(currentDir, targetFile[0]);
-  const fileStream = fs.createReadStream(filePath, { encoding: "utf-8" });
-  fileStream.on("data", (chunk) => {
-    output.write(`${chunk}\n`);
-  });
+export const readFile = async (currentDir, args) => {
+  if (args.length !== 1) {
+    handleInvalidData();
+    return;
+  }
+  const fileName = args[0];
+  const filePath = path.isAbsolute(fileName)
+    ? fileName
+    : path.join(currentDir, fileName);
+  console.log(filePath);
+  try {
+    await fs.access(filePath);
+
+    const data = await fs.readFile(filePath, { encoding: "utf-8" });
+    output.write(`${data}\n`);
+  } catch (err) {
+    console.log(`Operation failed`);
+  }
 };
