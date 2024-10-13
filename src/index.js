@@ -12,6 +12,8 @@ import { copyFile } from "./copyFile.js";
 import { moveFile } from "./moveFile.js";
 import { removeFile } from "./removeFile.js";
 import { hashFile } from "./hashFile.js";
+import { compressFile } from "./compressFile.js";
+import { decompressFile } from "./decompressFile.js";
 import {
   getEol,
   getCpus,
@@ -103,6 +105,13 @@ const initializeProgram = async () => {
         case "hash":
           hashFile(currentDir, args);
           break;
+        case "compress":
+          compressFile(currentDir, args);
+          break;
+        case "decompress":
+          decompressFile(currentDir, args);
+          break;
+
         default:
           output.write(`Invalid input\n`);
       }
