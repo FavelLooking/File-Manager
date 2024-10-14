@@ -3,7 +3,7 @@ import { handleInvalidData } from "./index.js";
 import * as fs from "fs";
 
 export const goToFolder = async (currentDir, args) => {
-  if (args.length !== 1) {
+  if (args.length !== 1 || args[0] === "..") {
     handleInvalidData();
     return currentDir;
   }
@@ -15,7 +15,7 @@ export const goToFolder = async (currentDir, args) => {
   try {
     await fs.promises.access(targetDir);
   } catch (err) {
-    console.log(`Operation failed`);
+    console.error(`Operation failed`);
     return currentDir;
   }
 

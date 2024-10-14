@@ -20,6 +20,6 @@ export const decompressFile = async (currentDir, args) => {
       console.log("Decompression finished");
     });
   } catch (err) {
-    console.log(err);
+    console.error("Operation failed");
   }
 };
