@@ -1,34 +1,72 @@
 import * as path from "path";
 import * as fs from "fs";
+import { createReadStream, createWriteStream } from "fs";
+import { handleInvalidData } from "./index.js";
 
 export const moveFile = async (currentDir, args) => {
-  const [pathToFile, newDirectoryPath] = args;
-  const folderPath = path.dirname(newDirectoryPath);
+  if (args.length !== 2) {
+    handleInvalidData();
+    return;
+  }
+  const [pathToFile, targetDirectory] = args;
+  const sourceFilePath = path.isAbsolute(pathToFile)
+    ? pathToFile
+    : path.join(currentDir, pathToFile);
+
+  const destinationDirectory = path.isAbsolute(targetDirectory)
+    ? targetDirectory
+    : path.join(currentDir, targetDirectory);
 
   try {
-    await fs.promises.mkdir(folderPath, { recursive: true });
-    const readStream = fs.createReadStream(pathToFile);
-    const writeStream = fs.createWriteStream(newDirectoryPath);
+    const sourceStats = await fs.promises.stat(sourceFilePath);
+
+    if (!sourceStats.isFile()) {
+      console.error("Operation failed: It's not a file.");
+      return;
+    }
+
+    try {
+      const targetStats = await fs.promises.stat(destinationDirectory);
+      if (!targetStats.isDirectory()) {
+        console.error("Operation failed: Target is not a directory.");
+        return;
+      }
+    } catch (error) {
+      console.error("Operation failed: Target directory does not exist.");
+      return;
+    }
+
+    const fileName = path.basename(sourceFilePath);
+    const destinationFilePath = path.join(destinationDirectory, fileName);
+
+    const readStream = createReadStream(sourceFilePath);
+    const writeStream = createWriteStream(destinationFilePath);
 
     readStream.pipe(writeStream);
 
     writeStream.on("finish", async () => {
       try {
-        await fs.promises.rm(pathToFile);
+        await fs.promises.rm(sourceFilePath);
         console.log("File moved successfully!");
       } catch (err) {
-        console.error("Error:", err);
+        console.error("Operation failed during file removal:", err.message);
       }
     });
-    writeStream.on("error", (err) => {
-      console.error("Error writing file:", err);
+
+    writeStream.on("error", () => {
+      console.error("Operation failed");
       readStream.destroy();
     });
-    readStream.on("error", (err) => {
-      console.error("Error reading file:", err);
+
+    readStream.on("error", () => {
+      console.error("Operation failed");
       writeStream.end();
     });
   } catch (err) {
-    console.error(err);
+    if (err.code === "ENOENT") {
+      console.error(`Operation failed: The file does not exist`);
+    } else {
+      console.error("Operation failed:", err.message);
+    }
   }
 };
